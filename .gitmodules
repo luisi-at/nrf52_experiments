@@ -1,0 +1,3 @@
+[submodule "dk_shield_base"]
+	path = dk_shield_base
+	url = https://github.com/luisi-at/iot_respirator_test
