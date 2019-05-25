@@ -162,18 +162,19 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 			
         LEDS_INVERT(BSP_LED_1_MASK);                                                                    //Toggle LED2 to indicate SAADC buffer full		
 
+        /*
         if((m_adc_evt_counter % SAADC_CALIBRATION_INTERVAL) == 0)                                  //Evaluate if offset calibration should be performed. Configure the SAADC_CALIBRATION_INTERVAL constant to change the calibration frequency
         {
             nrf_drv_saadc_abort();                                                                      // Abort all ongoing conversions. Calibration cannot be run if SAADC is busy
             m_saadc_calibrate = true;                                                                   // Set flag to trigger calibration in main context when SAADC is stopped
         }
+        */
         
-
 
         NRF_LOG_INFO("ADC event number: %d\r\n",(int)m_adc_evt_counter);                                //Print the event number on UART
         
-        NRF_LOG_INFO("RS1 RED: %d\r\n", p_event->data.done.p_buffer[0]); // should give channel 1
-        NRF_LOG_INFO("RS1 OX:  %d\r\n", p_event->data.done.p_buffer[1]); // should give channel 2
+        NRF_LOG_INFO("RS1 RED: %d\n", p_event->data.done.p_buffer[0]); // should give channel 1
+        NRF_LOG_INFO("RS1 OX:  %d\n", p_event->data.done.p_buffer[1]); // should give channel 2
 
         /*
         for (int i = 0; i < p_event->data.done.size; i++)
@@ -182,7 +183,6 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         }
         */
      
-        
         if(m_saadc_calibrate == false)
         {
             err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAADC_SAMPLES_IN_BUFFER);             //Set buffer so the SAADC can write to it again. 
@@ -192,6 +192,8 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
         m_adc_evt_counter++;
   
     }
+    
+    /*
     else if (p_event->type == NRF_DRV_SAADC_EVT_CALIBRATEDONE)
     {
         LEDS_INVERT(BSP_LED_2_MASK);                                                                    //Toggle LED3 to indicate SAADC calibration complete
@@ -204,8 +206,9 @@ void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
 
         NRF_LOG_INFO("SAADC calibration complete ! \r\n");                                              //Print on UART
 
-        
     }
+    */
+    
     
     
 }
@@ -297,9 +300,12 @@ int main(void)
     nrf_gpio_pin_set(ARDUINO_A0_PIN);
     nrf_delay_ms(10*1000); // delay 10 seconds
     nrf_gpio_pin_clear(ARDUINO_A0_PIN);
+
+    //nrf_drv_saadc_calibrate_offset();
     
     while (1)
     {
+        /*
         if(m_saadc_calibrate == true)
         {
 
@@ -308,6 +314,8 @@ int main(void)
             while(nrf_drv_saadc_calibrate_offset() != NRF_SUCCESS); //Trigger calibration task
             m_saadc_calibrate = false;
         }
+        */
+        
         nrf_pwr_mgmt_run();
 
         NRF_LOG_FLUSH();

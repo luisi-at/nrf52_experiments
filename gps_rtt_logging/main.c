@@ -722,9 +722,10 @@ void handle_gps(uint8_t * p_data, uint8_t length)
   
     // Do something with the string
     char * received_command = (char*)p_data;
+    //NRF_LOG_INFO("Data Received!");
 
     // dump out the RX
-    send_gps_msg(p_data, length);
+    //send_gps_msg(p_data, length);
     //printf(received_command);
 
     /*
@@ -758,7 +759,7 @@ void uart_error_handle(app_uart_evt_t * p_event)
         if((data[index-1] == '\n') || (index >= UART_RX_BUF_SIZE))
         {
           // Handle the GPS string
-          //handle_gps(data, index);
+          handle_gps(data, index);
           index = 0;
           
         }
@@ -790,7 +791,7 @@ static void uart_init(void)
     const app_uart_comm_params_t comm_params =
     {
           ARDUINO_1_PIN,
-          TX_PIN_NUMBER,
+          ARDUINO_0_PIN,
           NULL,
           NULL,
           APP_UART_FLOW_CONTROL_DISABLED,
@@ -810,105 +811,14 @@ static void uart_init(void)
 
 }
 
-// Timer for ADC samples
-void timer_handler(nrf_timer_event_t event_type, void * p_context)
-{}
-
-// Init the sampling event
-void saadc_sampling_event_init(void)
-{
-    ret_code_t err_code;
-
-    err_code = nrf_drv_ppi_init();
-    APP_ERROR_CHECK(err_code);
-
-    nrf_drv_timer_config_t timer_cfg = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer_cfg.bit_width = NRF_TIMER_BIT_WIDTH_32;
-    err_code = nrf_drv_timer_init(&m_timer, &timer_cfg, timer_handler);
-    APP_ERROR_CHECK(err_code);
-
-    /* setup m_timer for compare event every 400ms */
-    uint32_t ticks = nrf_drv_timer_ms_to_ticks(&m_timer, 400);
-    nrf_drv_timer_extended_compare(&m_timer,
-                                   NRF_TIMER_CC_CHANNEL0,
-                                   ticks,
-                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
-                                   false);
-    nrf_drv_timer_enable(&m_timer);
-
-    uint32_t timer_compare_event_addr = nrf_drv_timer_compare_event_address_get(&m_timer,
-                                                                                NRF_TIMER_CC_CHANNEL0);
-    uint32_t saadc_sample_task_addr   = nrf_drv_saadc_sample_task_get();
-
-    /* setup ppi channel so that timer compare event is triggering sample task in SAADC */
-    err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel,
-                                          timer_compare_event_addr,
-                                          saadc_sample_task_addr);
-    APP_ERROR_CHECK(err_code);
-}
-
-// Sampling event enable
-void saadc_sampling_event_enable(void)
-{
-    ret_code_t err_code = nrf_drv_ppi_channel_enable(m_ppi_channel);
-
-    APP_ERROR_CHECK(err_code);
-}
-
-
-// Callback
-void saadc_callback(nrf_drv_saadc_evt_t const * p_event)
-{
-    if (p_event->type == NRF_DRV_SAADC_EVT_DONE)
-    {
-        ret_code_t err_code;
-
-        err_code = nrf_drv_saadc_buffer_convert(p_event->data.done.p_buffer, SAMPLES_IN_BUFFER);
-        APP_ERROR_CHECK(err_code);
-
-        int i;
-        NRF_LOG_INFO("ADC event number: %d", (int)m_adc_evt_counter);
-
-        for (i = 0; i < SAMPLES_IN_BUFFER; i++)
-        {
-            NRF_LOG_INFO("%d", p_event->data.done.p_buffer[i]); // Outputs the values to the NRF log
-        }
-        m_adc_evt_counter++;
-    }
-}
-
-
-// Initialization
-void saadc_init(void)
-{
-    ret_code_t err_code;
-    nrf_saadc_channel_config_t channel_config =
-        NRF_DRV_SAADC_DEFAULT_CHANNEL_CONFIG_SE(NRF_SAADC_INPUT_AIN1); // Choose the channel for the ADC here, A1 = V_CO
-
-    err_code = nrf_drv_saadc_init(NULL, saadc_callback);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_saadc_channel_init(0, &channel_config);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[0], SAMPLES_IN_BUFFER);
-    APP_ERROR_CHECK(err_code);
-
-    err_code = nrf_drv_saadc_buffer_convert(m_buffer_pool[1], SAMPLES_IN_BUFFER);
-    APP_ERROR_CHECK(err_code);
-
-}
-
-
 /**
  * @brief Function for main application entry.
  */
 int main(void)
 {
     uint32_t err_code;
+    bool erase_bonds;
+    uint8_t set_required_settings;
 
     bsp_board_init(BSP_INIT_LEDS);
 
@@ -916,23 +826,17 @@ int main(void)
     // ARDUINO_0_PIN TX_PIN_NUMBER
 
     //NRF_LOG_DEFAULT_BACKENDS_INIT();
-    ret_code_t ret_code = nrf_pwr_mgmt_init();
-    APP_ERROR_CHECK(ret_code);
-    // Set up an ADC
-    saadc_init();
-    saadc_sampling_event_init();
-    saadc_sampling_event_enable();
+    //ret_code_t ret_code = nrf_pwr_mgmt_init();
+    //APP_ERROR_CHECK(ret_code);
 
     // Serial Comms
     uart_init();
-    log_init();
+    //log_init();
 
     nrf_gpio_cfg_output(LED_4); // 
     nrf_gpio_cfg_output(TEST_PIN); // Arduino pin 7
-    nrf_gpio_cfg_output(ARDUINO_A0_PIN);
+    //nrf_gpio_cfg_output(ARDUINO_A0_PIN);
 
-    NRF_LOG_INFO("Check- Logging started on RTT.");
-    
     char command[] = "$PMTK104*37\r\n";
     uint8_t length = strlen(command); //sizeof(command)/sizeof(char);
     uint8_t * msg = (uint8_t *)(command);
@@ -960,9 +864,10 @@ int main(void)
     send_gps_msg(msg, length);
 
     // Set the Preheat high on the MiCS-4514 
-    nrf_gpio_pin_clear(ARDUINO_A0_PIN);
+    //nrf_gpio_pin_clear(ARDUINO_A0_PIN);
 
-    NRF_LOG_INFO("SAADC HAL simple example started.");
+    //NRF_LOG_INFO("Check- Logging started on RTT.");
+    //NRF_LOG_INFO("SAADC HAL simple example started.");
 
     while(true)
     {

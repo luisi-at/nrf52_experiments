@@ -98,7 +98,7 @@ void uart_error_handle(app_uart_evt_t * p_event)
         {
           // Handle the GPS string
           handle_gps(data, index);
-          app_uart_flush(); // Attempt to prevent buffer overflow?
+          //app_uart_flush(); // Attempt to prevent buffer overflow?
           index = 0;
           
         }

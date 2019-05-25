@@ -24,6 +24,9 @@
   <ProjectSessionItem path="saadc_pca10040"/>
   <ProjectSessionItem path="saadc_pca10040;saadc_pca10040"/>
   <ProjectSessionItem path="saadc_pca10040;saadc_pca10040;Application"/>
+  <ProjectSessionItem path="saadc_pca10040;saadc_pca10040;Board Definition"/>
+  <ProjectSessionItem path="saadc_pca10040;saadc_pca10040;nRF_Drivers"/>
+  <ProjectSessionItem path="saadc_pca10040;saadc_pca10040;nRF_Libraries"/>
   <ProjectSessionItem path="saadc_pca10040;saadc_pca10040;nRF_Log"/>
  </Project>
  <Register1>
@@ -57,11 +60,10 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="48" y="223" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="1" top="214" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1311" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" selected="0" top="1271" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="141" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_saadc.h" selected="0" top="121" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="260" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_saadc.h" selected="0" top="240" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="52" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/experimental_log/src/nrf_log_frontend.c" selected="0" top="19" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="90" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" selected="1" top="70" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="92" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_saadc.h" selected="0" top="56" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="98" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_error_weak.c" selected="0" top="78" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="289" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_saadc.c" selected="0" top="268" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="saadc_pca10040" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="/Users/alexluisi/Documents/Nordic_Semi/nRF5_SDK_15.0.0_a53641a/integration/nrfx/legacy" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="saadc_pca10040" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="/Users/alexluisi/Documents/Nordic_Semi/nRF5_SDK_15.0.0_a53641a/integration/nrfx/legacy" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
