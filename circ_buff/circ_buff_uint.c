@@ -3,17 +3,17 @@
 #define CB_LENGTH 8u
 
 
-void uint_circular_buffer_push(uintCircularBuffer_t *cb, uint16_t data)
+void uint_circular_buffer_push(uintCircularBuffer_t *cb, uint16_t in)
 {
-    cb->data[cb->writePosition] = data;
+    cb->data[cb->writePosition] = in;
 
     cb->writePosition++;
     //cb->writePosition &= (CB_LENGTH - 1); // wraparound
 } 
 
-void uint_circular_buffer_pop(uintCircularBuffer_t *cb, uint16_t *data)
+void uint_circular_buffer_pop(uintCircularBuffer_t *cb, uint16_t *out)
 {
-    data = cb->data[cb->readPosition];
+    *out = cb->data[cb->readPosition];
 
     cb->readPosition++;
     //cb->readPosition &= (CB_LENGTH - 1); // wraparound
